@@ -207,7 +207,7 @@ celerybeat.pid
 .env
 .venv
 env/
-venv/
+venvOld/
 ENV/
 env.bak/
 venv.bak/
