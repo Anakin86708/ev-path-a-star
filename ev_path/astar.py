@@ -32,4 +32,4 @@ class AStar:
             possible_nodes = list(graph_matrix_adj.index[graph_matrix_adj.loc[current_node] != 0])
             for node in possible_nodes:
                 avaliation_nodes[node] = self.heuristic_func(current_node, node) + \
-                                         self.graph.weights[(current_node, node)]
+                                         self.graph._weights[(current_node, node)]
