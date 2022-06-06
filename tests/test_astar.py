@@ -51,7 +51,8 @@ class TestAStar(TestCase):
         mock_graph.weights = {
             ('5', '3'): 4,
             ('3', '4'): 2,
-            ('4', '10'): 3
+            ('4', '10'): 3,
+            ('3', '11'): 5,
         }
         path = {
             '5': None,
