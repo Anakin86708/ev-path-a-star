@@ -1,6 +1,9 @@
+import logging
+from logging import DEBUG
 from unittest import TestCase
 from unittest.mock import Mock
 
+import romenia
 from ev_path.astar import AStar
 from ev_path.graph import Graph
 
@@ -14,37 +17,17 @@ class TestAStar(TestCase):
         self.assertIsInstance(instance.graph, Graph)
 
     def test_path_from_to(self):
-        # TODO: replace with real graph from util.py
-        e = [
-            ('1', '2', 5),
-            ('2', '1', 5),
-            ('1', '3', 5),
-            ('3', '1', 5),
-            ('2', '3', 5),
-            ('3', '2', 5),
-            ('3', '11', 5),
-            ('11', '3', 5),
-            ('4', '3', 4),
-            ('3', '4', 4),
-            ('4', '10', 2),
-            ('10', '4', 2),
-            ('5', '2', 5),
-            ('2', '5', 5),
-            ('5', '3', 4),
-            ('3', '5', 4),
-        ]
-        expected = [
-            ('Arad', 'Sibiu'),
-            ('Sibiu', 'Rimnicu Vilcea'),
-            ('Rimnicu Vilcea', 'Pitesti'),
-            ('Pitesti', 'Bucharest')
-        ]  # TODO: add expected path
+        logging.basicConfig(level=DEBUG)
+        e = romenia.graph_cities
+        expected = romenia.expected
+        heuristic = romenia.heuristic
         graph = Graph(e)
 
-        instance = AStar(graph, lambda x, y: 0)
-        result = instance.path_from_to('5', '10')
+        instance = AStar(graph, heuristic)
+        result = instance.path_from_to(romenia.start_city, romenia.end_city)
 
         self.assertIsInstance(result, list)
+        self.assertEqual(result, expected)
 
     def test_real_cost(self):
         mock_graph = Mock()
@@ -64,7 +47,7 @@ class TestAStar(TestCase):
         end_node = '10'
         expected = 9
 
-        instance = AStar(mock_graph, lambda x, y: 0)
+        instance = AStar(mock_graph, lambda _: 0)
         result = instance.real_cost(start_node, end_node, path)
 
         self.assertEqual(result, expected)

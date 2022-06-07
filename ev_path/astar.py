@@ -1,3 +1,4 @@
+import logging
 from copy import deepcopy
 from queue import PriorityQueue
 from typing import List, Dict
@@ -10,6 +11,7 @@ class AStar:
     def __init__(self, graph: Graph, heuristic_func):
         self._graph = deepcopy(graph)
         self.heuristic_func = heuristic_func
+        self.logger = logging.getLogger(__name__)
 
     @property
     def graph(self):
@@ -33,8 +35,13 @@ class AStar:
             came_from[current_node] = previous
             closed.add(current_node)
 
-            if current_node == end_node:
-                break
+            min_opened_cost = opened.queue[0][0] if opened.qsize() > 0 else float('inf')
+            cost_current_node = self.avaliation_function(start_node, previous, current_node, came_from)
+            self.logger.debug(f"Minimum cost: {min_opened_cost}")
+            self.logger.debug(f"Cost current node: {cost_current_node}")
+
+            if current_node == end_node and cost_current_node < min_opened_cost:
+                return self.recreate_path_to_start(start_node, end_node, came_from)
 
             possible_nodes = set(graph_matrix_adj.index[graph_matrix_adj.loc[current_node] != 0]).difference(
                 set(closed))
@@ -42,10 +49,19 @@ class AStar:
             for connected_node in possible_nodes:
                 cost_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
                 opened.put((cost_node, connected_node, current_node))
+
+            self.logger.info(f"Current node: {current_node}")
+            self.logger.info(f"Previous node: {previous}")
+            self.logger.info(f"Opened nodes: {opened.queue}")
+            self.logger.info(f"Closed nodes: {closed}")
+            self.logger.info("##########\n")
+
         return self.recreate_path_to_start(start_node, end_node, came_from)
 
     def avaliation_function(self, start_node, current_node, connected_node, path):
-        return self.heuristic_func(current_node, connected_node) + self.real_cost(start_node, current_node, path)
+        path = deepcopy(path)
+        path[connected_node] = current_node
+        return self.heuristic_func(connected_node) + self.real_cost(start_node, connected_node, path)
 
     def real_cost(self, start_node, current_node, path):
         path_to_start = self.recreate_path_to_start(start_node, current_node, path)
@@ -57,8 +73,8 @@ class AStar:
 
         :param start_node: Graph's starter node.
         :param current_node: Graph's current node.
-        :param path: Maps the actual previous and the actual node. #HELP ARIEL
-        :return: Returns a List containing the path. #HELP ARIEL
+        :param path: Maps the actual previous and the actual node.
+        :return: Returns a List containing the path.
         """
         path_list = [current_node]
         node = current_node
