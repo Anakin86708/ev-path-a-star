@@ -1,9 +1,12 @@
+from operator import itemgetter
+from typing import List, Tuple
 from unittest import TestCase
 
 import numpy as np
 import pandas as pd
 
 from ev_path.graph import Graph
+from utils import problem02
 
 
 class TestGraph(TestCase):
@@ -36,7 +39,18 @@ class TestGraph(TestCase):
 
         result = instance.nodes
 
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, result)
+
+    def test_nodes_problem02(self):
+        e = problem02.graph_edges
+        # Expected set with all nodes from e
+        expected = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}
+
+        instance = Graph(e)
+
+        result = instance.nodes
+
+        self.assertEqual(expected, result)
 
     def test_edges(self):
         e = [
@@ -84,7 +98,18 @@ class TestGraph(TestCase):
         instance = Graph(e)
         result = instance.edges
 
-        self.assertListEqual(result, expected)
+        self.assertListEqual(expected, result)
+
+    def test_edges_problem02(self):
+        e = problem02.graph_edges
+        # Expected list with all edges from e, without weights
+        expected: List[Tuple[str, str]] = [itemgetter(0, 1)(edge) for edge in e]
+
+        instance = Graph(e)
+
+        result = instance.edges
+
+        self.assertListEqual(expected, result)
 
     def test_matrix_adj(self):
         e = [
@@ -108,12 +133,27 @@ class TestGraph(TestCase):
         # Get nodes from e
         nodes = {'a', 'b', 'c', 'd', 'e', 'f', 'z'}
         # Expected matrix with all edges from e, with weights
-        expected = pd.DataFrame(np.zeros((len(nodes), len(nodes))), index=nodes, columns=nodes)
-        for node_1, node_2, weight in e:
-            expected.loc[node_1, node_2] = weight
+        expected = self._extract_matrix(e, nodes)
 
         instance = Graph(e)
         result = instance.matrix_adj
+
+        pd.testing.assert_frame_equal(result, expected, check_dtype=False, check_like=True)
+
+    def test_matrix_adj_problem02(self):
+        e = problem02.graph_edges
+        # Get nodes from e
+        nodes = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}
+        # Expected matrix with all edges from e, with weights
+        expected = self._extract_matrix(e, nodes)
+
+        instance = Graph(e)
+        result = instance.matrix_adj
+
+        print('Expected:')
+        print(expected)
+        print('Result:')
+        print(result)
 
         pd.testing.assert_frame_equal(result, expected, check_dtype=False, check_like=True)
 
@@ -141,7 +181,7 @@ class TestGraph(TestCase):
 
         result = Graph.extract_nodes(e)
 
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, result)
 
     def test_extract_weights(self):
         e = [
@@ -166,7 +206,7 @@ class TestGraph(TestCase):
 
         result = Graph.extract_weights(e)
 
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, result)
 
     def test_extract_edges(self):
         e = [
@@ -209,4 +249,10 @@ class TestGraph(TestCase):
 
         result = Graph.extract_edges(e)
 
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, expected)
+
+    def _extract_matrix(self, e, nodes):
+        expected = pd.DataFrame(np.zeros((len(nodes), len(nodes))), index=nodes, columns=nodes)
+        for node_1, node_2, weight in e:
+            expected.loc[node_1, node_2] = weight
+        return expected

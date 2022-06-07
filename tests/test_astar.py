@@ -3,9 +3,9 @@ from logging import DEBUG
 from unittest import TestCase
 from unittest.mock import Mock
 
-import romenia
 from ev_path.astar import AStar
 from ev_path.graph import Graph
+from utils import romenia, problem02
 
 
 class TestAStar(TestCase):
@@ -16,7 +16,7 @@ class TestAStar(TestCase):
 
         self.assertIsInstance(instance.graph, Graph)
 
-    def test_path_from_to(self):
+    def test_path_from_to_romenia(self):
         logging.basicConfig(level=DEBUG)
         e = romenia.graph_cities
         expected = romenia.expected
@@ -27,7 +27,20 @@ class TestAStar(TestCase):
         result = instance.path_from_to(romenia.start_city, romenia.end_city)
 
         self.assertIsInstance(result, list)
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, result)
+
+    def test_path_from_to_problem02(self):
+        logging.basicConfig(level=DEBUG)
+        e = problem02.graph_edges
+        expected = problem02.expected
+        heuristic = problem02.heuristic
+        graph = Graph(e)
+
+        instance = AStar(graph, heuristic)
+        result = instance.path_from_to(problem02.start_node, problem02.end_node)
+
+        self.assertIsInstance(result, list)
+        self.assertEqual(expected, result)
 
     def test_real_cost(self):
         mock_graph = Mock()
@@ -50,7 +63,7 @@ class TestAStar(TestCase):
         instance = AStar(mock_graph, lambda _: 0)
         result = instance.real_cost(start_node, end_node, path)
 
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, result)
 
     def test_recreate_path_to_start(self):
         path = {
@@ -65,7 +78,7 @@ class TestAStar(TestCase):
 
         result = AStar.recreate_path_to_start(start_node, end_node, path)
 
-        self.assertEqual(result, expected)
+        self.assertEqual(expected, result)
 
     def test_are_nodes_present_on_graph_valid(self):
         start_node = 'x'

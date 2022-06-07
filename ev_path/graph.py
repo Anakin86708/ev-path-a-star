@@ -38,7 +38,7 @@ class Graph:
         """
         m = len(self.nodes)
         matrix = pd.DataFrame(np.zeros((m, m)), columns=self.nodes, index=self.nodes)
-        for (node_1, node_2), cost in zip(self.edges, self._weights.values()):
+        for (node_1, node_2), cost in self.weights.items():
             matrix.loc[node_1, node_2] = cost
         return matrix
 
