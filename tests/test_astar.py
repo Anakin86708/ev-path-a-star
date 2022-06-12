@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 from ev_path.astar import AStar
 from ev_path.graph import Graph
-from utils import romenia, problem02
+from utils import romenia, problem02, robot
 
 
 class TestAStar(TestCase):
@@ -41,6 +41,20 @@ class TestAStar(TestCase):
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
+
+    def test_path_from_to_robot(self):
+        logging.basicConfig(level=DEBUG)
+        e = robot.graph
+        expected = robot.expected
+        heuristic = robot.heuristic
+        graph = Graph(e)
+
+        instance = AStar(graph, heuristic)
+        result = instance.path_from_to(robot.start_node, robot.end_node)
+
+        self.assertIsInstance(result, list)
+        self.assertEqual(expected, result)
+
 
     def test_real_cost(self):
         mock_graph = Mock()

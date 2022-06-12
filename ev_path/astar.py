@@ -43,15 +43,18 @@ class AStar:
             if current_node == end_node and cost_current_node < min_opened_cost:
                 return self.recreate_path_to_start(start_node, end_node, came_from)
 
+            # Possible nodes to connect from the current node.
             possible_nodes = set(graph_matrix_adj.index[graph_matrix_adj.loc[current_node] != 0]).difference(
                 set(closed))
 
             for connected_node in possible_nodes:
                 cost_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
-                opened.put((cost_node, connected_node, current_node))
+                if self.is_less_than_cost_on_open(cost_node, connected_node, opened):
+                    opened.put((cost_node, connected_node, current_node))
 
             self.logger.info(f"Current node: {current_node}")
             self.logger.info(f"Previous node: {previous}")
+            self.logger.info(f"Complete path: {self.recreate_path_to_start(start_node, current_node, came_from)}")
             self.logger.info(f"Opened nodes: {opened.queue}")
             self.logger.info(f"Closed nodes: {closed}")
             self.logger.info("##########\n")
@@ -97,3 +100,18 @@ class AStar:
         if start_node not in self.graph.nodes or end_node not in self.graph.nodes:
             raise ValueError(f"Node {start_node if start_node not in self.graph.nodes else end_node} not in graph")
         return True
+
+    def is_less_than_cost_on_open(self, cost_connected_node, connected_node, opened: PriorityQueue):
+        black_list = []
+        if opened.empty():
+            return True
+        for cost, node, previous in opened.queue:
+            if previous == cost_connected_node and cost > cost_connected_node:
+                black_list.append((cost, node, previous))
+        if black_list:
+            opened = PriorityQueue()
+            for item in filter(lambda x: x not in black_list, opened.queue):
+                opened.put(item)
+            return True
+        else:
+            return False
