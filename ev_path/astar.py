@@ -24,7 +24,6 @@ class AStar:
     def path_from_to(self, start_node: str, end_node: str) -> tuple[float | int, list[str]]:
         self.are_nodes_present_on_graph(start_node, end_node)
 
-        distances = {(start_node, end_node): 0}
         came_from = {}
         opened = PriorityQueue()
         opened.put((0, start_node, None))
