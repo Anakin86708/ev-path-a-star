@@ -246,13 +246,12 @@ edges_roads = [
     StreetEdge(nodes['Kearny X Washington'], nodes['Kearny X Jackson'], 104.5),
 
     StreetEdge(nodes['Kearny X Jackson'], nodes['Kearny X Pacific Ave'], 101.4),
-    StreetEdge(nodes['Kearny X Jackson'], nodes['Columbus Ave X Kearny'], 101.4),
+    StreetEdge(nodes['Kearny X Jackson'], nodes['Columbus Ave X Pacific Ave'], 101.4),
 
     StreetEdge(nodes['Kearny X Pacific Ave'], nodes['Grant X Pacific Ave'], 140.6),
 
     # Columbus Ave to N San Francisco
-    StreetEdge(nodes['Columbus Ave X Kearny'], nodes['Grant X Pacific Ave'], 140.6),
-
+    StreetEdge(nodes['Columbus Ave X Pacific Ave'], nodes['Grant X Pacific Ave'], 140.6),
     StreetEdge(nodes['Columbus Ave X Pacific Ave'], nodes['Columbus Ave X Broadway'], 159.0),
 
     StreetEdge(nodes['Columbus Ave X Broadway'], nodes['Columbus Ave X Pacific Ave'], 159.0),
