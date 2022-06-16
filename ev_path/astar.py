@@ -41,29 +41,26 @@ class AStar:
             self.logger.debug(f"Minimum cost: {min_opened_cost}")
             self.logger.debug(f"Cost current node: {cost_current_node}")
 
+            # Path found
             if current_node == end_node and cost_current_node < min_opened_cost:
                 return self.recreate_path_to_start(start_node, end_node, came_from)
 
-            # Possible nodes to connect from the current node.
+            # Nodes that can be reached from current_node
             possible_nodes = set(graph_matrix_adj.index[graph_matrix_adj.loc[current_node] != 0]).difference(
                 set(closed))
 
             for connected_node in possible_nodes:
-                cost_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
+                cost_connected_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
 
                 if self._node_already_in_opened(connected_node, opened):
-                    for node in opened.queue:
-                        if node[1] == connected_node:
-                            if node[0] >= cost_node:
-                                opened.queue.remove(node)
-                                try:
-                                    closed.remove(node[1])
-                                except KeyError:
-                                    pass
-                                opened.put((cost_node, connected_node, current_node))
+                    for queue_node in filter(lambda x: x[1] == connected_node, opened.queue):
+                        cost_on_queue_node = queue_node[0]
+                        if cost_on_queue_node >= cost_connected_node:
+                            opened.queue.remove(queue_node)
+                            opened.put((cost_connected_node, connected_node, current_node))
 
                 else:
-                    opened.put((cost_node, connected_node, current_node))
+                    opened.put((cost_connected_node, connected_node, current_node))
 
             self.logger.info(f"Current node: {current_node}")
             self.logger.info(f"Previous node: {previous}")
@@ -71,8 +68,6 @@ class AStar:
             self.logger.info(f"Opened nodes: {opened.queue}")
             self.logger.info(f"Closed nodes: {closed}")
             self.logger.info("##########\n")
-
-        return self.recreate_path_to_start(start_node, end_node, came_from)
 
     def avaliation_function(self, start_node, current_node, connected_node, path):
         path = deepcopy(path)
@@ -114,6 +109,7 @@ class AStar:
             raise ValueError(f"Node {start_node if start_node not in self.graph.nodes else end_node} not in graph")
         return True
 
-    def _node_already_in_opened(self, connected_node, opened: PriorityQueue):
+    @staticmethod
+    def _node_already_in_opened(connected_node, opened: PriorityQueue):
         queue = list(map(itemgetter(1), opened.queue))
         return connected_node in queue

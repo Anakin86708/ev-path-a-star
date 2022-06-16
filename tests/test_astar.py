@@ -1,5 +1,6 @@
 import logging
 from logging import DEBUG
+from queue import PriorityQueue
 from unittest import TestCase
 from unittest.mock import Mock
 
@@ -54,7 +55,6 @@ class TestAStar(TestCase):
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
-
 
     def test_real_cost(self):
         mock_graph = Mock()
@@ -115,3 +115,15 @@ class TestAStar(TestCase):
 
         with self.assertRaises(ValueError, msg=f'Node {end_node} not in graph'):
             instance.are_nodes_present_on_graph(start_node, end_node)
+
+    def test_node_already_in_opened(self):
+        node = 'x'
+        itens = {'a', 'x', 'b', 'y'}
+        opened = PriorityQueue()
+        for item in itens:
+            opened.put((0, item))
+
+        instance = AStar(None, None)
+        result = instance._node_already_in_opened(node, opened)
+
+        self.assertTrue(result)
