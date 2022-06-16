@@ -21,7 +21,7 @@ class AStar:
         """
         return deepcopy(self._graph)
 
-    def path_from_to(self, start_node: str, end_node: str) -> List[str]:
+    def path_from_to(self, start_node: str, end_node: str) -> tuple[float | int, list[str]]:
         self.are_nodes_present_on_graph(start_node, end_node)
 
         distances = {(start_node, end_node): 0}
@@ -43,7 +43,8 @@ class AStar:
 
             # Path found
             if current_node == end_node and cost_current_node < min_opened_cost:
-                return self.recreate_path_to_start(start_node, end_node, came_from)
+                cost = self.real_cost(start_node, end_node, came_from)
+                return cost, self.recreate_path_to_start(start_node, end_node, came_from)
 
             # Nodes that can be reached from current_node
             possible_nodes = set(graph_matrix_adj.index[graph_matrix_adj.loc[current_node] != 0]).difference(

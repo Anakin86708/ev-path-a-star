@@ -54,6 +54,7 @@ expected = [
     'Pitesti',
     'Bucharest'
 ]
+expected_cost = 418
 
 start_city = 'Arad'
 end_city = 'Bucharest'

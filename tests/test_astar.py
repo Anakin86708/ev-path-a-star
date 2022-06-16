@@ -21,27 +21,31 @@ class TestAStar(TestCase):
         logging.basicConfig(level=DEBUG)
         e = romenia.graph_cities
         expected = romenia.expected
+        expected_cost = romenia.expected_cost
         heuristic = romenia.heuristic
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result = instance.path_from_to(romenia.start_city, romenia.end_city)
+        result_cost, result = instance.path_from_to(romenia.start_city, romenia.end_city)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
+        self.assertEqual(expected_cost, result_cost)
 
     def test_path_from_to_problem02(self):
         logging.basicConfig(level=DEBUG)
         e = problem02.graph_edges
         expected = problem02.expected
+        expected_cost = problem02.expected_cost
         heuristic = problem02.heuristic
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result = instance.path_from_to(problem02.start_node, problem02.end_node)
+        result_cost, result = instance.path_from_to(problem02.start_node, problem02.end_node)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
+        self.assertEqual(expected_cost, result_cost)
 
     def test_path_from_to_robot(self):
         logging.basicConfig(level=DEBUG)
@@ -51,7 +55,7 @@ class TestAStar(TestCase):
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result = instance.path_from_to(robot.start_node, robot.end_node)
+        result_cost, result = instance.path_from_to(robot.start_node, robot.end_node)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)

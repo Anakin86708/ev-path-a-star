@@ -30,6 +30,7 @@ graph_edges = [
 ]
 
 expected = ['a', 'f', 'g', 'i', 'j']
+expected_cost = 10
 start_node = 'a'
 end_node = 'j'
 
