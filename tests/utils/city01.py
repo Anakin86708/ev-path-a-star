@@ -211,7 +211,7 @@ edges_roads = [
 
     StreetEdge(nodes['Stockton X Valejo'], nodes['Stockton X Broadway'], 107.5),
     StreetEdge(nodes['Stockton X Valejo'], nodes['Columbus Ave X Valejo'], 90.7),
-    StreetEdge(nodes['Stockton X Valejo'], nodes['Stockton X Sacramento'], 149.1),
+    StreetEdge(nodes['Stockton X Valejo'], nodes['Stockton X Powell'], 149.1),
 
     # Grant to N San Francisco
     StreetEdge(nodes['Grant X California'], nodes['Stockton X California'], 142.5),
