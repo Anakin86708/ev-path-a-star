@@ -1,4 +1,4 @@
-ads = [
+edges = [
     ('A', 'B', 5),
     ('B', 'A', 5),
     ('A', 'C', 4),
@@ -19,8 +19,8 @@ ads = [
     ('E', 'D', 2),
 ]
 
-expected = ['',]
-expected_cost = 10
+expected = ['A', 'C', 'B', 'D', 'Z']
+expected_cost = 16
 start_node = 'A'
 end_node = 'Z'
 
@@ -30,4 +30,9 @@ _heuristic = {
     'C': 8,
     'D': 4,
     'E': 2,
+    'Z': 0,
 }
+
+
+def heuristic(node):
+    return _heuristic[node]

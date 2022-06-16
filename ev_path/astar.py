@@ -106,7 +106,7 @@ class AStar:
             ValueError: explicacao
         """
         if start_node not in self.graph.nodes or end_node not in self.graph.nodes:
-            raise ValueError(f"Node {start_node if start_node not in self.graph.nodes else end_node} not in graph")
+            raise ValueError(f"Node \"{start_node if start_node not in self.graph.nodes else end_node}\" not in graph")
         return True
 
     @staticmethod

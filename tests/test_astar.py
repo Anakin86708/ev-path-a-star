@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 from ev_path.astar import AStar
 from ev_path.graph import Graph
-from utils import romenia, problem02, robot
+from utils import romenia, problem02, robot, problem01
 
 
 class TestAStar(TestCase):
@@ -27,6 +27,21 @@ class TestAStar(TestCase):
 
         instance = AStar(graph, heuristic)
         result_cost, result = instance.path_from_to(romenia.start_city, romenia.end_city)
+
+        self.assertIsInstance(result, list)
+        self.assertEqual(expected, result)
+        self.assertEqual(expected_cost, result_cost)
+
+    def test_path_from_to_problem01(self):
+        logging.basicConfig(level=DEBUG)
+        e = problem01.edges
+        expected = problem01.expected
+        expected_cost = problem01.expected_cost
+        heuristic = problem01.heuristic
+        graph = Graph(e)
+
+        instance = AStar(graph, heuristic)
+        result_cost, result = instance.path_from_to(problem01.start_node, problem01.end_node)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
@@ -117,7 +132,7 @@ class TestAStar(TestCase):
 
         instance = AStar(graph_mock, None)
 
-        with self.assertRaises(ValueError, msg=f'Node {end_node} not in graph'):
+        with self.assertRaises(ValueError, msg=f'Node "{end_node}" not in graph'):
             instance.are_nodes_present_on_graph(start_node, end_node)
 
     def test_node_already_in_opened(self):
