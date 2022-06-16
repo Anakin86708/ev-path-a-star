@@ -211,7 +211,7 @@ edges_roads = [
 
     StreetEdge(nodes['Stockton X Valejo'], nodes['Stockton X Broadway'], 107.5),
     StreetEdge(nodes['Stockton X Valejo'], nodes['Columbus Ave X Valejo'], 90.7),
-    StreetEdge(nodes['Stockton X Valejo'], nodes['Stockton X Sacramento'], 149.1),
+    StreetEdge(nodes['Stockton X Valejo'], nodes['Stockton X Powell'], 149.1),
 
     # Grant to N San Francisco
     StreetEdge(nodes['Grant X California'], nodes['Stockton X California'], 142.5),
@@ -232,6 +232,8 @@ edges_roads = [
 
     StreetEdge(nodes['Grant X Pacific Ave'], nodes['Stockton X Pacific Ave'], 143.4),
     StreetEdge(nodes['Grant X Pacific Ave'], nodes['Grant X Broadway'], 101.5),
+    StreetEdge(nodes['Grant X Broadway'], nodes['Stockton X Broadway'], 160.2),
+    StreetEdge(nodes['Grant X Broadway'], nodes['Columbus Ave X Broadway'], 0),
 
     # Kearny to N San Francisco
     StreetEdge(nodes['Kearny X California'], nodes['Grant X California'], 140.0),
@@ -250,14 +252,13 @@ edges_roads = [
 
     StreetEdge(nodes['Kearny X Pacific Ave'], nodes['Grant X Pacific Ave'], 140.6),
 
+    
     # Columbus Ave to N San Francisco
     StreetEdge(nodes['Columbus Ave X Kearny'], nodes['Grant X Pacific Ave'], 140.6),
-
     StreetEdge(nodes['Columbus Ave X Pacific Ave'], nodes['Columbus Ave X Broadway'], 159.0),
-
     StreetEdge(nodes['Columbus Ave X Broadway'], nodes['Columbus Ave X Pacific Ave'], 159.0),
     StreetEdge(nodes['Columbus Ave X Broadway'], nodes['Columbus Ave X Valejo'], 140.0),
-
+    StreetEdge(nodes['Columbus Ave X Broadway'], nodes['Grant X Broadway'], 0),
     StreetEdge(nodes['Columbus Ave X Valejo'], nodes['Columbus Ave X Broadway'], 140.0),
 ]
 
