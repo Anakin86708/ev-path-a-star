@@ -36,4 +36,7 @@ class ManhattanHeuristic(HeuristicABC):
         super().__init__(end_node)
 
     def heuristic(self, node: NodeABC) -> float:
-        pass
+        delta_x = abs(node.x - self.end_node.x)
+        delta_y = abs(node.y - self.end_node.y)
+        delta_z = abs(node.height - self.end_node.height)
+        return (delta_x + delta_y + delta_z)
