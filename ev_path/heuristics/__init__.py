@@ -28,3 +28,12 @@ class EuclideanHeuristic(HeuristicABC):
         delta_y = (node.y - self.end_node.y)
         delta_height = (node.height - self.end_node.height)
         return (delta_x ** 2 + delta_y ** 2 + delta_height ** 2) ** 0.5
+
+
+class ManhattanHeuristic(HeuristicABC):
+
+    def __init__(self, end_node: NodeABC):
+        super().__init__(end_node)
+
+    def heuristic(self, node: NodeABC) -> float:
+        pass
