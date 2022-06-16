@@ -1,5 +1,6 @@
 import logging
 from copy import deepcopy
+from operator import itemgetter
 from queue import PriorityQueue
 from typing import List, Dict
 
@@ -49,7 +50,19 @@ class AStar:
 
             for connected_node in possible_nodes:
                 cost_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
-                if self.is_less_than_cost_on_open(cost_node, connected_node, opened):
+
+                if self._node_already_in_opened(connected_node, opened):
+                    for node in opened.queue:
+                        if node[1] == connected_node:
+                            if node[0] >= cost_node:
+                                opened.queue.remove(node)
+                                try:
+                                    closed.remove(node[1])
+                                except KeyError:
+                                    pass
+                                opened.put((cost_node, connected_node, current_node))
+
+                else:
                     opened.put((cost_node, connected_node, current_node))
 
             self.logger.info(f"Current node: {current_node}")
@@ -101,17 +114,6 @@ class AStar:
             raise ValueError(f"Node {start_node if start_node not in self.graph.nodes else end_node} not in graph")
         return True
 
-    def is_less_than_cost_on_open(self, cost_connected_node, connected_node, opened: PriorityQueue):
-        black_list = []
-        if opened.empty():
-            return True
-        for cost, node, previous in opened.queue:
-            if previous == cost_connected_node and cost > cost_connected_node:
-                black_list.append((cost, node, previous))
-        if black_list:
-            opened = PriorityQueue()
-            for item in filter(lambda x: x not in black_list, opened.queue):
-                opened.put(item)
-            return True
-        else:
-            return False
+    def _node_already_in_opened(self, connected_node, opened: PriorityQueue):
+        queue = list(map(itemgetter(1), opened.queue))
+        return connected_node in queue
