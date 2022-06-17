@@ -1,50 +1,53 @@
+from ev_path.edges import StreetEdge
+from ev_path.nodes import Node
+
 graph_edges = [
-    ('a', 'b', 6),
-    ('b', 'a', 6),
-    ('a', 'f', 3),
-    ('f', 'a', 3),
-    ('b', 'c', 3),
-    ('c', 'b', 3),
-    ('c', 'd', 2),
-    ('d', 'c', 2),
-    ('d', 'e', 1),
-    ('e', 'd', 1),
-    ('c', 'e', 5),
-    ('e', 'c', 5),
-    ('d', 'e', 8),
-    ('e', 'd', 8),
-    ('e', 'j', 5),
-    ('j', 'e', 5),
-    ('e', 'i', 5),
-    ('i', 'e', 5),
-    ('f', 'g', 1),
-    ('g', 'f', 1),
-    ('f', 'h', 7),
-    ('h', 'f', 7),
-    ('g', 'i', 3),
-    ('i', 'g', 3),
-    ('i', 'h', 2),
-    ('h', 'i', 2),
-    ('i', 'j', 3),
-    ('j', 'i', 3),
+    StreetEdge(Node('a'), Node('b'), 6),
+    StreetEdge(Node('b'), Node('a'), 6),
+    StreetEdge(Node('a'), Node('f'), 3),
+    StreetEdge(Node('f'), Node('a'), 3),
+    StreetEdge(Node('b'), Node('c'), 3),
+    StreetEdge(Node('c'), Node('b'), 3),
+    StreetEdge(Node('c'), Node('d'), 2),
+    StreetEdge(Node('d'), Node('c'), 2),
+    StreetEdge(Node('d'), Node('e'), 1),
+    StreetEdge(Node('e'), Node('d'), 1),
+    StreetEdge(Node('c'), Node('e'), 5),
+    StreetEdge(Node('e'), Node('c'), 5),
+    StreetEdge(Node('d'), Node('e'), 8),
+    StreetEdge(Node('e'), Node('d'), 8),
+    StreetEdge(Node('e'), Node('j'), 5),
+    StreetEdge(Node('j'), Node('e'), 5),
+    StreetEdge(Node('e'), Node('i'), 5),
+    StreetEdge(Node('i'), Node('e'), 5),
+    StreetEdge(Node('f'), Node('g'), 1),
+    StreetEdge(Node('g'), Node('f'), 1),
+    StreetEdge(Node('f'), Node('h'), 7),
+    StreetEdge(Node('h'), Node('f'), 7),
+    StreetEdge(Node('g'), Node('i'), 3),
+    StreetEdge(Node('i'), Node('g'), 3),
+    StreetEdge(Node('i'), Node('h'), 2),
+    StreetEdge(Node('h'), Node('i'), 2),
+    StreetEdge(Node('i'), Node('j'), 3),
+    StreetEdge(Node('j'), Node('i'), 3),
 ]
 
-expected = ['a', 'f', 'g', 'i', 'j']
+expected = [Node('a'), Node('f'), Node('g'), Node('i'), Node('j')]
 expected_cost = 10
-start_node = 'a'
-end_node = 'j'
+start_node = Node('a')
+end_node = Node('j')
 
 _heuristic = {
-    'a': 10,
-    'b': 8,
-    'c': 5,
-    'd': 7,
-    'e': 3,
-    'f': 6,
-    'g': 5,
-    'h': 3,
-    'i': 1,
-    'j': 0,
+    Node('a'): 10,
+    Node('b'): 8,
+    Node('c'): 5,
+    Node('d'): 7,
+    Node('e'): 3,
+    Node('f'): 6,
+    Node('g'): 5,
+    Node('h'): 3,
+    Node('i'): 1,
+    Node('j'): 0,
 }
 
 

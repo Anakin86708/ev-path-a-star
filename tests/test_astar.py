@@ -5,13 +5,21 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 from ev_path.astar import AStar
+from ev_path.edges import StreetEdge
 from ev_path.graph import Graph
+from ev_path.nodes import Node
 from utils import romenia, problem02, robot, problem01
 
 
 class TestAStar(TestCase):
     def test_graph(self):
-        graph_mock = Graph([('a', 'b', 10.0), ('a', 'c', 15), ('b', 'a', 10), ('b', 'e', 8), ('b', 'f', 5)])
+        graph_mock = Graph([
+            StreetEdge(Node('a'), Node('b'), 10.0),
+            StreetEdge(Node('a'), Node('c'), 15),
+            StreetEdge(Node('b'), Node('a'), 10),
+            StreetEdge(Node('b'), Node('e'), 8),
+            StreetEdge(Node('b'), Node('f'), 5)
+        ])
 
         instance = AStar(graph_mock, None)
 
@@ -76,38 +84,38 @@ class TestAStar(TestCase):
         self.assertEqual(expected, result)
 
     def test_real_cost(self):
-        mock_graph = Mock()
-        mock_graph.weights = {
-            ('5', '3'): 4,
-            ('3', '4'): 2,
-            ('4', '10'): 3,
-            ('3', '11'): 5,
-        }
+        edges = [
+            StreetEdge(Node('5'), Node('3'), 4),
+            StreetEdge(Node('3'), Node('4'), 2),
+            StreetEdge(Node('4'), Node('10'), 3),
+            StreetEdge(Node('3'), Node('11'), 5),
+        ]
+        graph = Graph(edges)
         path = {
-            '5': None,
-            '3': '5',
-            '4': '3',
-            '10': '4'
+            Node('5'): None,
+            Node('3'): Node('5'),
+            Node('4'): Node('3'),
+            Node('10'): Node('4')
         }
-        start_node = '5'
-        end_node = '10'
+        start_node = Node('5')
+        end_node = Node('10')
         expected = 9
 
-        instance = AStar(mock_graph, lambda _: 0)
+        instance = AStar(graph, lambda _: 0)
         result = instance.real_cost(start_node, end_node, path)
 
         self.assertEqual(expected, result)
 
     def test_recreate_path_to_start(self):
         path = {
-            '5': None,
-            '3': '5',
-            '4': '3',
-            '10': '4'
+            Node('5'): None,
+            Node('3'): Node('5'),
+            Node('4'): Node('3'),
+            Node('10'): Node('4'),
         }
-        start_node = '5'
-        end_node = '10'
-        expected = ['5', '3', '4', '10']
+        start_node = Node('5')
+        end_node = Node('10')
+        expected = [Node('5'), Node('3'), Node('4'), Node('10')]
 
         result = AStar.recreate_path_to_start(start_node, end_node, path)
 
@@ -146,3 +154,22 @@ class TestAStar(TestCase):
         result = instance._node_already_in_opened(node, opened)
 
         self.assertTrue(result)
+
+    def test_get_neighbours_from_current_node(self):
+        edges = [
+            StreetEdge(Node('5'), Node('2'), 3),
+            StreetEdge(Node('5'), Node('3'), 4),
+            StreetEdge(Node('5'), Node('4'), 2),
+            StreetEdge(Node('3'), Node('11'), 5),
+        ]
+        node = Node('5')
+        closed = {Node('2')}
+        expected = {
+            Node('3'),
+            Node('4'),
+        }
+
+        instance = AStar(Graph(edges), None)
+        result = instance._get_neighbours_from_current_node(closed, node)
+
+        self.assertEqual(expected, result)

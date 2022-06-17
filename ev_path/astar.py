@@ -1,10 +1,12 @@
 import logging
 from copy import deepcopy
+from functools import reduce
 from operator import itemgetter
 from queue import PriorityQueue
-from typing import List, Dict
+from typing import List, Dict, Set
 
 from ev_path.graph import Graph
+from ev_path.nodes import NodeABC
 
 
 class AStar:
@@ -21,7 +23,7 @@ class AStar:
         """
         return deepcopy(self._graph)
 
-    def path_from_to(self, start_node: str, end_node: str) -> tuple[float | int, list[str]]:
+    def path_from_to(self, start_node: NodeABC, end_node: NodeABC) -> tuple[float | int, list[NodeABC]]:
         self.are_nodes_present_on_graph(start_node, end_node)
 
         came_from = {}
@@ -29,7 +31,6 @@ class AStar:
         opened.put((0, start_node, None))
         closed = set()
 
-        graph_matrix_adj = self.graph.matrix_adj
         while opened.qsize() > 0:
             _, current_node, previous = opened.get()  # acts like pop()
             came_from[current_node] = previous
@@ -43,11 +44,13 @@ class AStar:
             # Path found
             if current_node == end_node and cost_current_node < min_opened_cost:
                 cost = self.real_cost(start_node, end_node, came_from)
-                return cost, self.recreate_path_to_start(start_node, end_node, came_from)
+                path_found = self.recreate_path_to_start(start_node, end_node, came_from)
+                self.logger.info(f"Path found: {path_found}")
+                self.logger.info(f"Real cost: {cost}")
+                return cost, path_found
 
             # Nodes that can be reached from current_node
-            possible_nodes = set(graph_matrix_adj.index[graph_matrix_adj.loc[current_node] != 0]).difference(
-                set(closed))
+            possible_nodes = self._get_neighbours_from_current_node(closed, current_node)
 
             for connected_node in possible_nodes:
                 cost_connected_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
@@ -69,17 +72,30 @@ class AStar:
             self.logger.info(f"Closed nodes: {closed}")
             self.logger.info("##########\n")
 
+    def _get_neighbours_from_current_node(self, closed: Set, current_node: NodeABC) -> Set[NodeABC]:
+        """
+        Get all the nodes that can be reached from current_node and that are not on the closed list.
+
+        :param closed: Represents the nodes that already have been opened.
+        :param current_node: Current node.
+        :return: Set with nodes that can be reached and have not been opened.
+        """
+        graph_matrix_adj = self.graph.matrix_adj
+        connected_nodes = graph_matrix_adj.index[graph_matrix_adj.loc[current_node.name] != 0]
+        return reduce(set.union, map(self.graph.get_nodes_by_name, connected_nodes)).difference(closed)
+
     def avaliation_function(self, start_node, current_node, connected_node, path):
         path = deepcopy(path)
-        path[connected_node] = current_node
+        path[connected_node] = current_node  # Used to connect to the analized node
         return self.heuristic_func(connected_node) + self.real_cost(start_node, connected_node, path)
 
     def real_cost(self, start_node, current_node, path):
         path_to_start = self.recreate_path_to_start(start_node, current_node, path)
-        return sum([self.graph.weights[(n1, n2)] for n1, n2 in zip(path_to_start, path_to_start[1:])])
+        return sum([self.graph.get_weight_between(n1, n2) for n1, n2 in
+                    zip(path_to_start, path_to_start[1:])])
 
     @staticmethod
-    def recreate_path_to_start(start_node, current_node, path: Dict) -> List[str]:
+    def recreate_path_to_start(start_node: NodeABC, current_node: NodeABC, path: Dict) -> List[NodeABC]:
         """
 
         :param start_node: Graph's starter node.
