@@ -7,7 +7,7 @@ from ev_path.nodes import StreetIntersectionNode
 
 WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
 
-FILENAME_HEIGHTS = os.path.join(WORKING_DIR, '../tests/utils/heights.pkl')
+FILENAME_HEIGHTS = os.path.join(WORKING_DIR, '../../tests/utils/heights.pkl')
 
 
 def load_nodes():
@@ -16,6 +16,8 @@ def load_nodes():
 
 
 nodes = {node.name: node for node in load_nodes()}
+nodes['Columbus Ave X Pacific Ave'] = StreetIntersectionNode('Columbus Ave X Pacific Ave', 980, 500, 22)
+nodes['Columbus Ave X Broadway'] = StreetIntersectionNode('Columbus Ave X Broadway', 860, 600, 29)
 edges_roads = [
     # Leavenworth to N San Francisco
     StreetEdge(nodes['Leavenworth X California'], nodes['Leavenworth X Sacramento'], 105.5),
