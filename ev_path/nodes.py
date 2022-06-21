@@ -25,10 +25,7 @@ class NodeABC(ABC):
         return hash((self.name, self.x, self.y, self.height))
 
     def __eq__(self, other: "NodeABC"):
-        return self.name == other.name \
-            # and self.x == other.x \
-        # and self.y == other.y \
-        # and self.height == other.height
+        return self.name == other.name
 
     def __str__(self):
         return self.name

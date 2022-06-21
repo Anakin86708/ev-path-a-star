@@ -56,7 +56,11 @@ class AStar:
                 return cost, path_found, came_from
 
             # Nodes that can be reached from current_node
-            possible_nodes = self._get_neighbours_from_current_node(closed, current_node)
+            try:
+                possible_nodes = self._get_neighbours_from_current_node(closed, current_node)
+            except:
+                self.logger.info(f"There are no possible nodes!")
+                continue
 
             for connected_node in possible_nodes:
                 cost_connected_node = self.avaliation_function(start_node, current_node, connected_node, came_from)
@@ -96,7 +100,27 @@ class AStar:
                     adj_matrix.loc[root.name, c.name] = 1
         tree = nx.DiGraph(adj_matrix)
         pos = graphviz_layout(tree, prog='dot')
-        nx.draw(tree, pos, with_labels=True)
+        nx.draw_networkx(tree, pos, with_labels=True, font_size=6, node_size=50)
+
+    def draw_path(self, start_node: NodeABC, end_node: NodeABC, path: Dict[NodeABC, NodeABC]):
+        names = {x.name for x in (path.keys() | path.values()) if x is not None}
+        adj_matrix = pd.DataFrame(np.zeros((len(names), len(names))),
+                                  columns=names,
+                                  index=names)
+        for k, v in path.items():
+            if v is None:
+                continue
+            root = v
+            child = list(filter(lambda x: x == k, path.keys()))
+            if child:
+                for c in child:
+                    adj_matrix.loc[root.name, c.name] = 1
+        tree = nx.DiGraph(adj_matrix)
+        pos = {}
+        for node in tree.nodes:
+            node_g = self.graph.get_nodes_by_name(node).pop()
+            pos[node_g.name] = (node_g.x, node_g.y)
+        nx.draw_networkx(tree, pos=pos, with_labels=False, font_size=6, node_size=50)
 
     def _get_neighbours_from_current_node(self, closed: Set, current_node: NodeABC) -> Set[NodeABC]:
         """
