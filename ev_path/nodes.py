@@ -26,9 +26,9 @@ class NodeABC(ABC):
 
     def __eq__(self, other: "NodeABC"):
         return self.name == other.name \
-               and self.x == other.x \
-               and self.y == other.y \
-               and self.height == other.height
+            # and self.x == other.x \
+        # and self.y == other.y \
+        # and self.height == other.height
 
     def __str__(self):
         return self.name

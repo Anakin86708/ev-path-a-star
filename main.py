@@ -21,10 +21,15 @@ if __name__ == '__main__':
     astar = AStar(g, heuristic.heuristic)
     astar.logger.setLevel(logging.INFO)
 
-    cost, path = astar.path_from_to(start_node, end_node)
+    cost, final_path, path = astar.path_from_to(start_node, end_node)
+    astar.draw_tree(start_node, end_node, path)
 
-    print(path)
+    print(final_path)
 
     G = nx.DiGraph(g.matrix_adj)
-    nx.draw_networkx(G)
+    pos = {}
+    for node in G.nodes:
+        node_g = g.get_nodes_by_name(node).pop()
+        pos[node] = (node_g.x, node_g.y)
+    nx.draw_networkx(G, pos=pos, with_labels=True)
     plt.show()

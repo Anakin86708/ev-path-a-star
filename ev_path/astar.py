@@ -5,6 +5,11 @@ from operator import itemgetter
 from queue import PriorityQueue
 from typing import List, Dict, Set
 
+import networkx as nx
+import numpy as np
+import pandas as pd
+from networkx.drawing.nx_pydot import graphviz_layout
+
 from ev_path.graph import Graph
 from ev_path.nodes import NodeABC
 
@@ -23,7 +28,8 @@ class AStar:
         """
         return deepcopy(self._graph)
 
-    def path_from_to(self, start_node: NodeABC, end_node: NodeABC) -> tuple[float | int, list[NodeABC]]:
+    def path_from_to(self, start_node: NodeABC, end_node: NodeABC) -> tuple[
+        float | int, list[NodeABC], Dict[NodeABC, NodeABC]]:
         self.are_nodes_present_on_graph(start_node, end_node)
 
         came_from = {}
@@ -47,7 +53,7 @@ class AStar:
                 path_found = self.recreate_path_to_start(start_node, end_node, came_from)
                 self.logger.info(f"Path found: {path_found}")
                 self.logger.info(f"Real cost: {cost}")
-                return cost, path_found
+                return cost, path_found, came_from
 
             # Nodes that can be reached from current_node
             possible_nodes = self._get_neighbours_from_current_node(closed, current_node)
@@ -71,6 +77,26 @@ class AStar:
             self.logger.info(f"Opened nodes: {opened.queue}")
             self.logger.info(f"Closed nodes: {closed}")
             self.logger.info("##########\n")
+
+    def draw_tree(self, start_node: NodeABC, end_node: NodeABC, path: Dict[NodeABC, NodeABC]):
+        """
+        Draws the tree of the A* algorithm.
+        """
+        names = {x.name for x in (path.keys() | path.values()) if x is not None}
+        adj_matrix = pd.DataFrame(np.zeros((len(names), len(names))),
+                                  columns=names,
+                                  index=names)
+        for k, v in path.items():
+            if v is None:
+                continue
+            root = v
+            child = list(filter(lambda x: x == k, path.keys()))
+            if child:
+                for c in child:
+                    adj_matrix.loc[root.name, c.name] = 1
+        tree = nx.DiGraph(adj_matrix)
+        pos = graphviz_layout(tree, prog='dot')
+        nx.draw(tree, pos, with_labels=True)
 
     def _get_neighbours_from_current_node(self, closed: Set, current_node: NodeABC) -> Set[NodeABC]:
         """

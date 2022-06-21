@@ -34,7 +34,7 @@ class TestAStar(TestCase):
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result_cost, result = instance.path_from_to(romenia.start_city, romenia.end_city)
+        result_cost, result, _ = instance.path_from_to(romenia.start_city, romenia.end_city)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
@@ -49,7 +49,7 @@ class TestAStar(TestCase):
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result_cost, result = instance.path_from_to(problem01.start_node, problem01.end_node)
+        result_cost, result, _ = instance.path_from_to(problem01.start_node, problem01.end_node)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
@@ -64,7 +64,7 @@ class TestAStar(TestCase):
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result_cost, result = instance.path_from_to(problem02.start_node, problem02.end_node)
+        result_cost, result, _ = instance.path_from_to(problem02.start_node, problem02.end_node)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
@@ -78,7 +78,7 @@ class TestAStar(TestCase):
         graph = Graph(e)
 
         instance = AStar(graph, heuristic)
-        result_cost, result = instance.path_from_to(robot.start_node, robot.end_node)
+        result_cost, result, _ = instance.path_from_to(robot.start_node, robot.end_node)
 
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
