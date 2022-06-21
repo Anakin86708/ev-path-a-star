@@ -1,7 +1,6 @@
 import logging
 
 import matplotlib.pyplot as plt
-import networkx as nx
 
 from ev_path.astar import AStar
 from ev_path.data import city01
@@ -15,9 +14,16 @@ if __name__ == '__main__':
     e = city01.edges_roads
     log_level = 1
 
-    g = Graph(e)
     start_node = nodes['Kearny X California']
     end_node = nodes['Jones X Valejo']
+
+    g = Graph(e)
+    g.draw()
+    plt.savefig('results/graph.svg', format='svg')
+    plt.show()
+    plt.cla()
+
+    # Adimissível
     heuristic = EuclideanHeuristic(end_node)
     astar_adimissivel = AStar(g, heuristic.heuristic)
     astar_adimissivel.logger.setLevel(log_level)
@@ -28,7 +34,7 @@ if __name__ == '__main__':
     plt.show()
     plt.cla()
 
-    astar_adimissivel.draw_path(start_node, end_node, path)
+    astar_adimissivel.draw_tree_on_space(start_node, end_node, path)
     plt.savefig('results/path_adm.svg', format='svg')
     plt.show()
     plt.cla()
@@ -36,18 +42,6 @@ if __name__ == '__main__':
     print(f'Cost: {cost}')
     print('Final path')
     print(final_path)
-
-    G_adimissivel = nx.DiGraph(g.matrix_adj)
-    pos = {}
-    height = []
-    for node in G_adimissivel.nodes:
-        node_g = g.get_nodes_by_name(node).pop()
-        pos[node] = (node_g.x, node_g.y)
-        height.append(node_g.height)
-    nx.draw_networkx(G_adimissivel, pos=pos, with_labels=False, node_size=height)
-    plt.savefig('results/graph_adm.svg', format='svg')
-    plt.show()
-    plt.cla()
 
     # Não adimissível
     heuristic = ManhattanHeuristic(end_node)
@@ -60,7 +54,7 @@ if __name__ == '__main__':
     plt.show()
     plt.cla()
 
-    astar_nao_adimissivel.draw_path(start_node, end_node, path)
+    astar_nao_adimissivel.draw_tree_on_space(start_node, end_node, path)
     plt.savefig('results/path_nao_adm.svg', format='svg')
     plt.show()
     plt.cla()
@@ -68,14 +62,3 @@ if __name__ == '__main__':
     print(f'Cost: {cost}')
     print('Final path')
     print(final_path)
-
-    G_adimissivel = nx.DiGraph(g.matrix_adj)
-    pos = {}
-    height = []
-    for node in G_adimissivel.nodes:
-        node_g = g.get_nodes_by_name(node).pop()
-        pos[node] = (node_g.x, node_g.y)
-        height.append(node_g.height)
-    nx.draw_networkx(G_adimissivel, pos=pos, with_labels=False, node_size=height)
-    plt.savefig('results/graph_nao_adm.svg', format='svg')
-    plt.show()

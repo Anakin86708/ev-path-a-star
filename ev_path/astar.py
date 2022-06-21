@@ -86,41 +86,33 @@ class AStar:
         """
         Draws the tree of the A* algorithm.
         """
-        names = {x.name for x in (path.keys() | path.values()) if x is not None}
-        adj_matrix = pd.DataFrame(np.zeros((len(names), len(names))),
-                                  columns=names,
-                                  index=names)
-        for k, v in path.items():
-            if v is None:
-                continue
-            root = v
-            child = list(filter(lambda x: x == k, path.keys()))
-            if child:
-                for c in child:
-                    adj_matrix.loc[root.name, c.name] = 1
-        tree = nx.DiGraph(adj_matrix)
+        tree = self._extract_tree(path)
         pos = graphviz_layout(tree, prog='dot')
         nx.draw_networkx(tree, pos, with_labels=True, font_size=6, node_size=50)
 
-    def draw_path(self, start_node: NodeABC, end_node: NodeABC, path: Dict[NodeABC, NodeABC]):
-        names = {x.name for x in (path.keys() | path.values()) if x is not None}
-        adj_matrix = pd.DataFrame(np.zeros((len(names), len(names))),
-                                  columns=names,
-                                  index=names)
-        for k, v in path.items():
-            if v is None:
-                continue
-            root = v
-            child = list(filter(lambda x: x == k, path.keys()))
-            if child:
-                for c in child:
-                    adj_matrix.loc[root.name, c.name] = 1
-        tree = nx.DiGraph(adj_matrix)
+    def draw_tree_on_space(self, start_node: NodeABC, end_node: NodeABC, path: Dict[NodeABC, NodeABC]):
+        tree = self._extract_tree(path)
         pos = {}
         for node in tree.nodes:
             node_g = self.graph.get_nodes_by_name(node).pop()
             pos[node_g.name] = (node_g.x, node_g.y)
         nx.draw_networkx(tree, pos=pos, with_labels=False, font_size=6, node_size=50)
+
+    @staticmethod
+    def _extract_tree(path: Dict[NodeABC, NodeABC]):
+        names = {x.name for x in (path.keys() | path.values()) if x is not None}
+        adj_matrix = pd.DataFrame(np.zeros((len(names), len(names))),
+                                  columns=names,
+                                  index=names)
+        for k, v in path.items():
+            if v is None:
+                continue
+            root = v
+            child = list(filter(lambda x: x == k, path.keys()))
+            if child:
+                for c in child:
+                    adj_matrix.loc[root.name, c.name] = 1
+        return nx.DiGraph(adj_matrix)
 
     def _get_neighbours_from_current_node(self, closed: Set, current_node: NodeABC) -> Set[NodeABC]:
         """

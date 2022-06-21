@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import List, Dict, Set
 
+import networkx as nx
 import numpy as np
 import pandas as pd
 
@@ -92,3 +93,24 @@ class Graph:
         """
         return {x: x.weight for x in edges}
 
+    def draw(self):
+        g = nx.DiGraph(self.matrix_adj)
+        pos = {}
+        height = []
+        weight = self._get_weight_colors(g)
+
+        for node in g.nodes:
+            node_g = self.get_nodes_by_name(node).pop()
+            pos[node] = (node_g.x, node_g.y)
+            height.append(node_g.height)
+
+        return nx.draw_networkx(g, pos=pos, with_labels=False, node_size=height, edge_color=weight)
+
+    def _get_weight_colors(self, g: nx.DiGraph):
+        weight = []
+        for edge in g.edges:
+            nodes = self.get_nodes_by_name(edge)
+            n1 = next(filter(lambda x: x.name == edge[0], nodes))
+            n2 = next(filter(lambda x: x.name == edge[1], nodes))
+            weight.append(self.get_weight_between(n1, n2))
+        return weight
