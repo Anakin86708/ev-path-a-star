@@ -87,7 +87,10 @@ class AStar:
         Draws the tree of the A* algorithm.
         """
         tree = self._extract_tree(path)
-        pos = graphviz_layout(tree, prog='dot')
+        try:
+            pos = graphviz_layout(tree, prog='dot')
+        except:
+            raise RuntimeError('Make sure Graphviz is properly installed.')
         nx.draw_networkx(tree, pos, with_labels=True, font_size=6, node_size=50)
 
     def draw_tree_on_space(self, start_node: NodeABC, end_node: NodeABC, path: Dict[NodeABC, NodeABC]):
