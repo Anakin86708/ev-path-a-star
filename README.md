@@ -2,4 +2,4 @@
 
 # Instalation
 
-Requires [Graphviz](https://gitlab.com/graphviz/graphviz) to plot the tree.
+Requires [Graphviz](https://www.graphviz.org/download/) to plot the tree.
