@@ -82,6 +82,8 @@ class AStar:
             self.logger.info(f"Closed nodes: {closed}")
             self.logger.info("##########\n")
 
+        raise RuntimeError(f'There are no paths leading to node {end_node} from {start_node}.')
+
     def draw_tree(self, start_node: NodeABC, end_node: NodeABC, path: Dict[NodeABC, NodeABC]):
         """
         Draws the tree of the A* algorithm.

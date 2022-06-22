@@ -83,6 +83,21 @@ class TestAStar(TestCase):
         self.assertIsInstance(result, list)
         self.assertEqual(expected, result)
 
+    def test_no_path_found(self):
+        logging.basicConfig(level=DEBUG)
+        edges = [
+            StreetEdge(Node('5'), Node('3'), 4),
+            StreetEdge(Node('3'), Node('11'), 5),
+            StreetEdge(Node('11'), Node('3'), 5),
+        ]
+        start_node = Node('11')
+        end_node = Node('5')
+        graph = Graph(edges)
+
+        with self.assertRaises(RuntimeError, msg=f'There are no paths leading to node {end_node} from {start_node}.'):
+            instance = AStar(graph, lambda _: 1)
+            instance.path_from_to(start_node, end_node)
+
     def test_real_cost(self):
         edges = [
             StreetEdge(Node('5'), Node('3'), 4),
